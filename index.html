@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="SPACeR: Self-Play Anchoring with Centralized Reference Models">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPACeR: Self-Play Anchoring with Centralized Reference Models</title>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+  <!-- MATHJAX -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- </script>
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+
+<body>
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-2 publication-title"><span class="spacer-brand">SPACeR</span>: <span
+                class="spacer-brand">S</span>elf-<span class="spacer-brand">P</span>lay <span
+                class="spacer-brand">A</span>nchoring with
+              <span class="spacer-brand">Ce</span>ntralized <span class="spacer-brand">R</span>eference Models
+            </h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://weijer-chang.github.io/">Wei-Jer Chang</a><sup>1,2</sup>,
+              </span>
+              <span class="author-block">
+                <a href="#">Akshay Rangesh</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="#">Kevin Joseph</a><sup>1,3</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://peasant98.github.io/">Matthew Strong</a><sup>1,4</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://me.berkeley.edu/people/masayoshi-tomizuka/">Masayoshi Tomizuka</a><sup>2</sup>,
+              </span>
+              <span class="author-block">
+                <a href="#">Yihan Hu</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://zhanwei.site/">Wei Zhan</a><sup>1,2</sup>
+              </span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>Applied Intuition,</span>
+              <span class="author-block"><sup>2</sup>University of California, Berkeley,</span>
+              <span class="author-block"><sup>3</sup>New York University,</span>
+              <span class="author-block"><sup>4</sup>Stanford University</span>
+            </div>
+
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- PDF Link. -->
+                <!-- <span class="link-block">
+                  <a href="https://arxiv.org/abs/2504.11521" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Paper</span>
+                  </a> -->
+                <!-- Arxiv Link. -->
+                </span>
+                <span class="link-block">
+                  <a href="" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+                <!-- Code Link. -->
+                <!-- <span class="link-block"> -->
+                <!-- TODO modify to actual code in the future -->
+                <!-- <a href="https://langtraj.github.io/" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span> -->
+                <!-- Inference Code Announcement -->
+
+                <!-- Icon and ECCV 2024 text -->
+                <!-- <div class="icon-container">
+                  <span class="icon-text">ECCV 2024</span>
+                </div> -->
+
+                <!-- <div class="announcement">
+                  <p class="is-size-6">We will realease the dataset, please stay tuned!</p>
+                </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section abstract-section">
+    <div class="container is-max-desktop">
+      <!-- Abstract. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              Developing autonomous vehicles (AVs) requires not only safety and efficiency, but also realistic,
+              human-like behaviors
+              that are socially aware and predictable. Achieving this requires sim agent policies that are human-like,
+              fast, and
+              scalable in multi-agent settings. Recent progress in imitation learning with large diffusion-based or
+              tokenized models
+              has shown that behaviors can be captured directly from human driving data, producing realistic policies.
+              However, these
+              models are computationally expensive, slow during inference, and struggle to adapt in reactive,
+              closed-loop scenarios.
+              In contrast, self-play reinforcement learning (RL) scales efficiently and naturally captures multi-agent
+              interactions,
+              but it often relies on heuristics and reward shaping, and the resulting policies can diverge from human
+              norms. We
+              propose human-like self-play, a framework that leverages a pretrained tokenized autoregressive motion
+              model as a
+              centralized reference policy to guide decentralized self-play. The reference model provides likelihood
+              rewards and KL
+              divergence, anchoring policies to the human driving distribution while preserving RL scalability.
+              Evaluated on the Waymo
+              Sim Agents Challenge, our method achieves competitive performance with imitation-learned policies while
+              being up to 10×
+              faster at inference and 50× smaller in parameter size than large generative models. In addition, we
+              demonstrate in
+              closed-loop ego planning evaluation tasks that our sim agents can effectively measure planner quality with
+              fast and
+              scalable traffic simulation, establishing a new paradigm for testing autonomous driving policies.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- <section class="section video-section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Video</h2>
+          <div class="publication-video">
+            <video controls width="800" height="600">
+              <source src="./static/videos/safe_sim.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section> -->
+
+  <!-- Overview of SPACeR -->
+  <style>
+    /* General section styling */
+    .section {
+      padding: 3rem 1.5rem;
+    }
+
+    /* Title styling */
+    .title.is-3 {
+      color: #2c3e50;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+    }
+
+    .title.is-4 {
+      color: #34495e;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    /* Enhanced abstract section */
+    .abstract-section {
+      background-color: #ffffff;
+    }
+
+    .abstract-section .content {
+      font-size: 1.05rem;
+      line-height: 1.8;
+    }
+
+    /* SPACeR branding color */
+    .spacer-brand {
+      color: #ff6b35;
+      font-weight: bold;
+    }
+
+    /* Improved link styling */
+    a {
+      color: #4a90e2;
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      color: #357abd;
+    }
+
+    /* Content styling */
+    .content.has-text-justified {
+      line-height: 1.7;
+    }
+
+    /* Video section subtitle */
+    .subtitle.is-6 {
+      color: #666;
+      margin-top: 0.5rem;
+    }
+
+    /* Section separators */
+    hr {
+      background-color: #e0e0e0;
+      border: none;
+      height: 1px;
+      margin: 2rem 0;
+    }
+
+    /* Improved spacing between sections */
+    .section+.section {
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .scale-120 {
+      display: inline-block;
+      /* keeps layout tidy          */
+      transform: scale(1.2);
+      /* 1 .2 × larger              */
+      transform-origin: center top;
+      /* scale relative to the top  */
+    }
+  </style>
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Overview of SPACeR</h2>
+        </div>
+      </div>
+
+      <!-- Text under the figure -->
+      <div class="columns is-centered has-text-justified">
+        <div class="column is-full-width">
+          <div class="content">
+            <p>
+              Existing approaches face a fundamental trade-off:
+            </p>
+            <ul>
+              <li><b>Imitation learning (IL):</b> Realistic and human-like, but tokenized or diffusion models are
+                <i>large (GPU memory heavy), slow</i>, and difficult to scale.
+              </li>
+              <li><b>Self-play reinforcement learning (RL):</b> Efficient and scalable, but requires <i>reward
+                  shaping</i> and often <i>diverges from human norms</i>.</li>
+            </ul>
+            <p>
+              <b>SPACeR</b> is an <b>RL-first approach</b> designed to bridge these
+              gaps—combining the scalability of
+              self-play with the realism of IL.
+              Our policies are <b>~50× smaller</b> than tokenized models and run <b>10× faster (or more!)</b>, enabling
+              lightweight, human-like multi-agent simulation.
+            </p>
+            <p>
+              We propose to anchor self-play reinforcement learning to a pretrained tokenized <i>reference model</i>,
+              which provides a human-likeness distributional signal. The resulting SPACeR policy is <b>decentralized</b>
+              and
+              conditioned only on local observations, while the reference model is <b>centralized</b> and conditioned on
+              the full
+              scene context—allowing scalable training without sacrificing realism.
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- Figure (PDF) -->
+      <div class="container is-max-desktop">
+
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-full-width">
+            <img src="./static/images/fig1_clean.png" alt="Figure" width="100%" height="500px" />
+          </div>
+        </div>
+
+  </section>
+  <!-- Method Section -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Human-like Self-Play</h2>
+        </div>
+      </div>
+
+      <div class="columns is-centered has-text-justified">
+        <div class="column is-full-width">
+          <div class="content">
+            <p>
+              Formally, we augment self-play reinforcement learning with a pretrained reference policy
+              \(\pi_{\text{ref}}\)
+              that captures the human driving distribution and provides a realism signal during training. The overall
+              objective is
+            </p>
+
+            \[
+            r_t = r_t^{\text{task}} + \alpha \, r_{\text{humanlike}}(s_t, a_t), \quad
+            L(\theta) = L_{\text{PPO}}(\theta; A[r]) - \beta \, D_{\text{KL}}\!\left(\pi_{\text{ref}}(\cdot \mid s_t)
+            \,\|\, \pi_\theta(\cdot \mid o_t)\right),
+            \]
+
+            <p>
+              where (1) \(L_{\text{PPO}}\) optimizes task performance (goal-reaching, collision avoidance,
+              off-road avoidance),
+              (2) the human-likeness reward \(r_{\text{humanlike}}(s_t, a_t) = \log \pi_{\text{ref}}(a_t \mid s_t)\)
+              provides dense per-timestep likelihood feedback, and (3) the <b>distributional alignment term</b> enforces
+              KL-regularization between the reference and learned policies. This formulation ensures agents learn from
+              experience in a closed-loop manner while also remaining closely aligned with
+              realistic human driving behaviors
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Reference Model -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <h3 class="title is-4">Pretrained Reference Tokenized Model</h3>
+        </div>
+      </div>
+
+      <div class="columns is-centered has-text-justified">
+        <div class="column is-full-width">
+          <div class="content">
+            <p>
+              To incorporate human-likeness into self-play, we introduce a
+              <b>pretrained reference tokenized model</b> (\(\pi_{\text{ref}}\)), trained on real-world
+              driving trajectories as a proxy for the human driving distribution.
+              Tokenized models (e.g., <a href="https://github.com/rainmaker22/smart" target="_blank"
+                rel="noopener">SMART</a>)
+              factorize the joint action distribution under a conditional independence assumption:
+            </p>
+
+            <p>
+              $$ p(a_t \mid a_{&lt;t}, c) = \prod_{i=1}^{N} p(a_t^i \mid a_{&lt;t}, c). $$
+            </p>
+
+            <p>
+              This yields per-agent (i) distributions at each timestep (t). Unlike autoregressive generation, our
+              approach only
+              requires <b>tractable training</b>
+              a single forward pass per rollout. By aligning the action space of \(\pi_\theta\) and
+              \(\pi_{\text{ref}}\), we obtain a direct <b>distributional signal</b> that guides scalable
+              self-play toward human-like behavior.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Comparison to self-play RL -->
+
+  <!-- Results Table (Overleaf style in HTML) -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Experimental Results on Waymo Sim Agent Challenge</h2>
+        </div>
+      </div>
+
+      <div class="columns is-centered has-text-justified">
+        <div class="column is-full-width">
+          <div class="content">
+            <p>
+              We measure whether SPACeR self-play policies are <b>human-like</b> by
+              adopting the Waymo Sim Agents
+              Challenge (WOSAC). We compare SPACeR against two self-play RL baselines:
+            </p>
+            <ul>
+              <li><b>PPO:</b> Only using task reward (goal reaching, collision avoidance, off-road avoidance)</li>
+              <li><b><a href="https://sites.google.com/view/driving-partners" target="_blank"
+                    rel="noopener">HR-PPO</a>:</b> Previous works that use Behavior Cloning as KL-regularization</li>
+              <li><b><a href="https://github.com/rainmaker22/smart" target="_blank" rel="noopener">SMART*</a>:</b> State
+                of the art tokenized traffic models</li>
+              <li><b><a href="https://zhejz.github.io/catk/" target="_blank" rel="noopener">CAT-K*</a>:</b> Supervised
+                Fine-tuning on top of SMART</li>
+            </ul>
+
+            <p>
+              SPACeR outperforms other self-play approaches significantly across
+              all realism metrics. In addition, compared to imitation-learning methods, SPACeR is lightweight(65k params
+              , 50x smaller than SMART 3M) and achieves ~10× throughput
+              while maintaining competitive performance.
+            </p>
+            <p class="is-size-6 has-text-grey mt-2">
+              *Note: We retrain SMART and CAT-K with the same token size of 200 at 5Hz, where CAT-K is used as a
+              reference model.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <style>
+            .formal-table {
+              border-collapse: collapse;
+              width: 100%;
+              font-size: 0.9rem;
+            }
+
+            .formal-table th,
+            .formal-table td {
+              padding: 6px 10px;
+              text-align: center;
+            }
+
+            .formal-table th {
+              border-bottom: 2px solid black;
+            }
+
+            .formal-table tr:not(:last-child) td {
+              border-bottom: 1px solid #ccc;
+            }
+
+            .formal-table tr.il-row {
+              background-color: #f0f0f0;
+            }
+
+            .formal-table tr.ours td {
+              font-weight: bold;
+            }
+
+            .formal-table td:first-child,
+            .formal-table th:first-child {
+              text-align: left;
+            }
+          </style>
+
+          <table class="formal-table">
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>Composite ↑</th>
+                <th>Kinematic ↑</th>
+                <th>Interactive ↑</th>
+                <th>Map ↑</th>
+                <th>minADE ↓</th>
+                <th>Collision ↓</th>
+                <th>Off-road ↓</th>
+                <th>Throughput ↑</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>PPO</td>
+                <td>0.693</td>
+                <td>0.277</td>
+                <td>0.750</td>
+                <td>0.860</td>
+                <td>15.450</td>
+                <td>0.010</td>
+                <td>0.043</td>
+                <td>211.8</td>
+              </tr>
+              <tr>
+                <td>HR-PPO</td>
+                <td>0.707</td>
+                <td>0.333</td>
+                <td>0.750</td>
+                <td>0.860</td>
+                <td>6.700</td>
+                <td>0.043</td>
+                <td>0.070</td>
+                <td>211.8</td>
+              </tr>
+              <tr class="ours">
+                <td>SPACeR (Ours)</td>
+                <td>0.740</td>
+                <td>0.390</td>
+                <td>0.783</td>
+                <td>0.880</td>
+                <td>4.733</td>
+                <td>0.020</td>
+                <td>0.050</td>
+                <td>211.8</td>
+              </tr>
+              <tr class="il-row">
+                <td>SMART* (IL)</td>
+                <td>0.720</td>
+                <td>0.450</td>
+                <td>0.725</td>
+                <td>0.870</td>
+                <td>1.840</td>
+                <td>0.170</td>
+                <td>0.130</td>
+                <td>22.5</td>
+              </tr>
+              <tr class="il-row">
+                <td>CAT-K* (IL)</td>
+                <td>0.766</td>
+                <td>0.490</td>
+                <td>0.792</td>
+                <td>0.890</td>
+                <td>1.470</td>
+                <td>0.060</td>
+                <td>0.090</td>
+                <td>22.5</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="is-size-7 has-text-grey mt-2">
+            Throughput = scenarios/sec @ 5Hz on a single A100 GPU, each scenario is 8 seconds. IL = imitation learning
+            methods (shaded).
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Synchronized Video Comparison Section -->
+  <style>
+    .sync-row .columns {
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    .sync-row .column {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .sync-row .video-container {
+      margin: 0;
+    }
+
+    .sync-row video {
+      display: block;
+    }
+  </style>
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Qualitative Comparison with Self-Play Baseline</h2>
+          <p class="subtitle is-6" style="margin-top: 1.5rem;">
+            Qualitatively, PPO and HR-PPO usually have stop-and-go behavior, while SPACeR maintains a smooth driving
+            behavior. The colored agents are targeted agents from the Waymo Sim Agents Challenge, and all agents are
+            controlled by the self-play model.
+          </p>
+        </div>
+      </div>
+
+      <!-- Baseline 0 -->
+      <div class="columns is-centered has-text-justified" style="margin-bottom: 0.5rem; margin-top: 2rem;">
+        <div class="column is-full-width">
+          <p class="is-size-6 has-text-centered" style="font-style: italic; color: #555;">
+            PPO exhibits jerky stop-and-go behavior, while SPACeR demonstrates smoother, more natural motion.
+          </p>
+        </div>
+      </div>
+      <div class="sync-row" data-row="1">
+        <div class="columns is-centered is-gapless">
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="1" width="100%" autoplay loop muted controls>
+                <source src="./static/videos/source/baseline_0/paper_selfplay_nodrop_2a02131f75e5a3c3_sample0.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>PPO</strong></p>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="1" width="100%" autoplay loop muted controls>
+                <source src="./static/videos/source/baseline_0/paper_humanppo_2a02131f75e5a3c3_sample0.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>HR-PPO</strong></p>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <div class="video-container" style="position: relative;">
+              <!-- Legend positioned on the rightmost video -->
+              <div
+                style="position: absolute; top: 10px; right: 10px; z-index: 10; background: rgba(255,255,255,0.9); padding: 8px 12px; border-radius: 4px; border: 1px solid #ddd;">
+                <div style="display: flex; flex-direction: column; gap: 6px; font-size: 13px;">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 18px; height: 12px; background-color: #87CEEB; border: 1px solid #333;"></div>
+                    <span style="font-weight: 500;">Targeted Agent</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 18px; height: 12px; background-color: #7a7a7a; border: 1px solid #333;"></div>
+                    <span style="font-weight: 500;">Other Agents</span>
+                  </div>
+                </div>
+              </div>
+              <video class="sync-video" data-row="1" width="100%" autoplay loop muted controls>
+                <source src="./static/videos/source/baseline_0/paper_human_2a02131f75e5a3c3_sample0.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>SPACeR</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- Baseline 1 -->
+      <div class="columns is-centered has-text-justified" style="margin-bottom: 0.5rem;">
+        <div class="column is-full-width">
+          <p class="is-size-6 has-text-centered" style="font-style: italic; color: #555;">
+            PPO and HR-PPO agents goes to the wrong direction and stop immediately, while SPACeR agents produce traffic
+            compliant behavior.
+          </p>
+        </div>
+      </div>
+      <div class="sync-row" data-row="2">
+        <div class="columns is-centered is-gapless">
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="2" width="100%" autoplay loop muted controls>
+                <source src="./static/videos/source/baseline_1/paper_selfplay_nodrop_101d7af08d9b56ae_sample0.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>PPO</strong></p>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="2" width="100%" autoplay loop muted controls>
+                <source src="./static/videos/source/baseline_1/paper_humanppo_101d7af08d9b56ae_sample0.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>HR-PPO</strong></p>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="2" width="100%" autoplay loop muted controls>
+                <source src="./static/videos/source/baseline_1/paper_human_101d7af08d9b56ae_sample0.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>SPACeR</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- Baseline 2 -->
+      <div class="columns is-centered has-text-justified" style="margin-bottom: 0.5rem;">
+        <div class="column is-full-width">
+          <p class="is-size-6 has-text-centered" style="font-style: italic; color: #555;">
+            On Highway scenarios, all agents drive at a higher speed with lane-changing behavior, SPACeR agents are
+            smoother and natural without stop-and-go behavior.
+          </p>
+        </div>
+      </div>
+      <div class="sync-row" data-row="3">
+        <div class="columns is-centered is-gapless">
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="3" width="100%" autoplay loop muted controls>
+                <source src="./static/videos/source/baseline_2/paper_selfplay_nodrop_f70b6e59cc0b762_sample0.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>PPO</strong></p>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="3" width="100%" autoplay loop muted controls>
+                <source src="./static/videos/source/baseline_2/paper_humanppo_f70b6e59cc0b762_sample0.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>HR-PPO</strong></p>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="3" width="100%" autoplay loop muted controls>
+                <source src="./static/videos/source/baseline_2/paper_human_f70b6e59cc0b762_sample0.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>SPACeR</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- Baseline 3 -->
+      <div class="columns is-centered has-text-justified" style="margin-bottom: 0.5rem;">
+        <div class="column is-full-width">
+          <p class="is-size-6 has-text-centered" style="font-style: italic; color: #555;">
+            In intersection yielding (A2 → A3), HR-PPO yields abruptly near collision, while SPACeR yields smoothly in
+            advance.
+          </p>
+        </div>
+      </div>
+      <div class="sync-row" data-row="4">
+        <div class="columns is-centered is-gapless">
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="4" width="100%" autoplay loop muted controls>
+                <source src="./static/videos/source/baseline_3/paper_selfplay_nodrop_fb25d1801fe6c75d_sample0.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>PPO</strong></p>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="4" width="100%" autoplay loop muted controls>
+                <source src="./static/videos/source/baseline_3/paper_humanppo_fb25d1801fe6c75d_sample0.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>HR-PPO</strong></p>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="4" width="100%" autoplay loop muted controls>
+                <source src="./static/videos/source/baseline_3/paper_human_fb25d1801fe6c75d_sample0.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>SPACeR</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Synchronized Video Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Group videos by row
+      const syncRows = document.querySelectorAll('.sync-row');
+
+      syncRows.forEach(row => {
+        const rowId = row.getAttribute('data-row');
+        const videosInRow = row.querySelectorAll(`.sync-video[data-row="${rowId}"]`);
+
+        // Synchronize play/pause within the row
+        videosInRow.forEach((video, index) => {
+          video.addEventListener('play', () => {
+            videosInRow.forEach((v, i) => {
+              if (i !== index && v.paused) {
+                v.play();
+              }
+            });
+          });
+
+          video.addEventListener('pause', () => {
+            videosInRow.forEach((v, i) => {
+              if (i !== index && !v.paused) {
+                v.pause();
+              }
+            });
+          });
+
+          // Synchronize seeking within the row
+          video.addEventListener('seeked', () => {
+            const currentTime = video.currentTime;
+            videosInRow.forEach((v, i) => {
+              if (i !== index && Math.abs(v.currentTime - currentTime) > 0.1) {
+                v.currentTime = currentTime;
+              }
+            });
+          });
+
+          // Synchronize time periodically (fallback for drift)
+          video.addEventListener('timeupdate', () => {
+            if (!video.paused) {
+              const currentTime = video.currentTime;
+              videosInRow.forEach((v, i) => {
+                if (i !== index && Math.abs(v.currentTime - currentTime) > 0.3) {
+                  v.currentTime = currentTime;
+                }
+              });
+            }
+          });
+        });
+      });
+
+      // Apply speed control to all sync videos
+      const speedSelect = document.getElementById('video-speed-select');
+      if (speedSelect) {
+        speedSelect.addEventListener('change', function () {
+          const speed = parseFloat(this.value);
+          document.querySelectorAll('.sync-video').forEach(video => {
+            video.playbackRate = speed;
+          });
+        });
+      }
+    });
+  </script>
+
+  <!-- Closed-loop Planner Evaluation Section -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Closed-loop Planner Evaluation</h2>
+
+        </div>
+      </div>
+
+      <div class="columns is-centered has-text-justified">
+        <div class="column is-full-width">
+          <div class="content">
+            <p>
+              We evaluate SPACeR by comparing how planners perform under different sim
+              agent policies.
+              Specifically, we
+              test 22 self-play–trained policies, 10 sampling-based Frenet planners, and 10 IDM-based planners. For each
+              planner, we
+              compute PDM scores across diverse scenes under three simulation modes: ground-truth log replay, Cat-K
+              rollouts, and
+              SPACeR agent policies. We then measure the </b>correlation of PDM scores</b> across sim agent strategies
+              to understand how similarly different agents
+              assess planner behaviors.
+
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <img src="./static/images/fig2_correlation.png" alt="Correlation Analysis" width="90%" />
+        </div>
+      </div>
+      <div class="columns is-centered has-text-justified">
+        <div class="column is-full-width">
+          <div class="content">
+            <p>
+              The correlation of collision scores is low between SPACeR against
+              Log-Replay and CAT-K. Qualitatively,
+              both Log-Replay and CAT-K yield more false positive collisions, giving a wrong estimate
+              of the planner's safety performance. In contrast, SPACeR agents provide
+              more reactive, realistic behavior
+              that better reflects real-world
+              driving scenarios.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div id="video-speed-control" style="display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
+        <label class="label is-size-4" style="margin-bottom: 0;">Playback Speed:</label>
+        <div class="select">
+          <select id="video-speed-select">
+            <option value="0.5">0.5x</option>
+            <option value="1" selected>1x</option>
+            <option value="2">2x</option>
+            <option value="4">4x</option>
+          </select>
+        </div>
+      </div>
+      <!-- Planner 1 (formerly Planner 2) -->
+      <div class="columns is-centered has-text-justified" style="margin-bottom: 0.5rem;">
+        <div class="column is-full-width">
+          <p class="is-size-6 has-text-centered" style="font-style: italic; color: #555;">
+            When the ego changes lanes, Log-Replay and CAT-K agents ignore the ego and collide (collision score = 0),
+            while SPACeR
+            slows down to avoid collision, leading to a more accurate PDM score.
+          </p>
+        </div>
+      </div>
+      <div class="sync-row" data-row="5" style="position: relative;">
+        <!-- Legend -->
+        <div
+          style="position: absolute; top: 10px; right: 15px; z-index: 10; background: rgba(255,255,255,0.9); padding: 8px 12px; border-radius: 4px; border: 1px solid #ddd;">
+          <div style="display: flex; flex-direction: column; gap: 6px; font-size: 14px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="width: 20px; height: 14px; background-color: #87CEEB; border: 1px solid #333;"></div>
+              <span style="font-weight: 500;">Ego Policy</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="width: 20px; height: 14px; background-color: #7a7a7a; border: 1px solid #333;"></div>
+              <span style="font-weight: 500;">Sim Agent</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="columns is-centered is-gapless">
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="5" width="100%" autoplay loop muted controls>
+                <source
+                  src="./static/videos/source/planner_2/0922_planner_eval_wide_search_sampling_vs_gt_wide_search_20250923_174004_39083c0ecc4b0545.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>Log-Replay</strong></p>
+              <p class="has-text-centered is-size-7 mt-1">
+                PDM Score 0.38<br>Collision Score 0.0
+              </p>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="5" width="100%" autoplay loop muted controls>
+                <source
+                  src="./static/videos/source/planner_2/0922_planner_eval_wide_search_sampling_vs_smart_wide_search_20250923_174005_39083c0ecc4b0545.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>CAT-K</strong></p>
+              <p class="has-text-centered is-size-7 mt-1">
+                PDM Score 0.38<br>Collision Score 0.0
+              </p>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="5" width="100%" autoplay loop muted controls>
+                <source
+                  src="./static/videos/source/planner_2/0922_planner_eval_wide_search_vs_checkpoint_sampling_vs_checkpoint_wide_search_20250923_052227_39083c0ecc4b0545.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>SPACeR</strong></p>
+              <p class="has-text-centered is-size-7 mt-1">
+                PDM Score 0.7<br>Collision Score 1.0
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- Planner 2 (formerly Planner 1) -->
+      <div class="columns is-centered has-text-justified" style="margin-bottom: 0.5rem;">
+        <div class="column is-full-width">
+          <p class="is-size-6 has-text-centered" style="font-style: italic; color: #555;">
+            CAT-K agents drive faster than ego and cause back collision, while SPACeR maintains a safe distance with
+            smoother motion.
+          </p>
+        </div>
+      </div>
+      <div class="sync-row" data-row="6">
+        <div class="columns is-centered is-gapless">
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="6" width="100%" autoplay loop muted controls>
+                <source
+                  src="./static/videos/source/planner_1/0922_planner_eval_wide_search_sampling_vs_gt_wide_search_20250923_174004_50f2020a2db1c3df.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>Log-Replay</strong></p>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="6" width="100%" autoplay loop muted controls>
+                <source
+                  src="./static/videos/source/planner_1/0922_planner_eval_wide_search_sampling_vs_smart_wide_search_20250923_174005_50f2020a2db1c3df.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>CAT-K</strong></p>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="6" width="100%" autoplay loop muted controls>
+                <source
+                  src="./static/videos/source/planner_1/0922_planner_eval_wide_search_vs_checkpoint_sampling_vs_checkpoint_wide_search_20250923_052227_50f2020a2db1c3df.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>SPACeR</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- Planner 3 -->
+      <div class="columns is-centered has-text-justified" style="margin-bottom: 0.5rem;">
+        <div class="column is-full-width">
+          <p class="is-size-6 has-text-centered" style="font-style: italic; color: #555;">
+            CAT-K agents aggressive merge to ego lanes, causing collision.
+          </p>
+        </div>
+      </div>
+      <div class="sync-row" data-row="7">
+        <div class="columns is-centered is-gapless">
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="7" width="100%" autoplay loop muted controls>
+                <source
+                  src="./static/videos/source/planner_3/0922_planner_eval_aggressive_sampling_vs_gt_aggressive_20250923_164609_f70b6e59cc0b762.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>Log-Replay</strong></p>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="7" width="100%" autoplay loop muted controls>
+                <source
+                  src="./static/videos/source/planner_3/0922_planner_eval_aggressive_sampling_vs_smart_aggressive_20250923_164609_f70b6e59cc0b762.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>CAT-K</strong></p>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="7" width="100%" autoplay loop muted controls>
+                <source
+                  src="./static/videos/source/planner_3/0922_planner_eval_aggressive_vs_checkpoint_sampling_vs_checkpoint_aggressive_20250923_044406_f70b6e59cc0b762.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>SPACeR</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- Planner 4 -->
+      <div class="columns is-centered has-text-justified" style="margin-bottom: 0.5rem;">
+        <div class="column is-full-width">
+          <p class="is-size-6 has-text-centered" style="font-style: italic; color: #555;">
+            Negotiation scenario: All agents collide, but SPACeR shows reactive behavior, slowing down when the ego
+            enters the wrong
+            lane and helping it learn the correct signals for how and when to avoid collisions
+          </p>
+        </div>
+      </div>
+      <div class="sync-row" data-row="8">
+        <div class="columns is-centered is-gapless">
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="8" width="100%" autoplay loop muted controls>
+                <source
+                  src="./static/videos/source/planner_4/0922_planner_eval_aggressive_sampling_vs_gt_aggressive_20250923_164609_f77ee3fd401dc8ba.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>Log-Replay</strong></p>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="8" width="100%" autoplay loop muted controls>
+                <source
+                  src="./static/videos/source/planner_4/0922_planner_eval_aggressive_sampling_vs_smart_aggressive_20250923_164609_f77ee3fd401dc8ba.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>CAT-K</strong></p>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="8" width="100%" autoplay loop muted controls>
+                <source
+                  src="./static/videos/source/planner_4/0922_planner_eval_aggressive_vs_checkpoint_sampling_vs_checkpoint_aggressive_20250923_044406_f77ee3fd401dc8ba.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>SPACeR</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- Planner 5 -->
+      <div class="columns is-centered has-text-justified" style="margin-bottom: 0.5rem;">
+        <div class="column is-full-width">
+          <p class="is-size-6 has-text-centered" style="font-style: italic; color: #555;">
+            T-intersection: Both Log-Replay and CAT-K agents doesn't react to the ego and cause back collision.
+          </p>
+        </div>
+      </div>
+      <div class="sync-row" data-row="9">
+        <div class="columns is-centered is-gapless">
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="9" width="100%" autoplay loop muted controls>
+                <source
+                  src="./static/videos/source/planner_5/0922_planner_eval_idm_baseline_sampling_vs_gt_idm_baseline_20250923_191508_eb9b7a73a0cd0fa.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>Log-Replay</strong></p>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="9" width="100%" autoplay loop muted controls>
+                <source
+                  src="./static/videos/source/planner_5/0922_planner_eval_idm_baseline_sampling_vs_smart_idm_baseline_20250923_191508_eb9b7a73a0cd0fa.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>CAT-K</strong></p>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="9" width="100%" autoplay loop muted controls>
+                <source
+                  src="./static/videos/source/planner_5/0922_planner_eval_idm_baseline_vs_checkpoint_sampling_vs_checkpoint_idm_baseline_20250923_061334_eb9b7a73a0cd0fa.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>SPACeR</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- Planner 6 -->
+      <div class="columns is-centered has-text-justified" style="margin-bottom: 0.5rem;">
+        <div class="column is-full-width">
+          <p class="is-size-6 has-text-centered" style="font-style: italic; color: #555;">
+            At a 4-way intersection, CAT-K moves too early and causes a front-end collision, while SPACeR yields safely.
+          </p>
+        </div>
+      </div>
+      <div class="sync-row" data-row="10">
+        <div class="columns is-centered is-gapless">
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="10" width="100%" autoplay loop muted controls>
+                <source
+                  src="./static/videos/source/planner_6/0922_planner_eval_wide_search_sampling_vs_gt_wide_search_20250923_174004_916803955c7de93c.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>Log-Replay</strong></p>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="10" width="100%" autoplay loop muted controls>
+                <source
+                  src="./static/videos/source/planner_6/0922_planner_eval_wide_search_sampling_vs_smart_wide_search_20250923_174005_916803955c7de93c.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>CAT-K</strong></p>
+            </div>
+          </div>
+
+          <div class="column is-one-third">
+            <div class="video-container">
+              <video class="sync-video" data-row="10" width="100%" autoplay loop muted controls>
+                <source
+                  src="./static/videos/source/planner_6/0922_planner_eval_wide_search_vs_checkpoint_sampling_vs_checkpoint_wide_search_20250923_052227_916803955c7de93c.mp4"
+                  type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <p class="has-text-centered is-size-6 mt-2"><strong>SPACeR</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conclusion -->
+      <div class="columns is-centered has-text-justified" style="margin-top: 3rem;">
+        <div class="column is-full-width">
+          <div class="content">
+            <p style="font-size: 1.05rem; line-height: 1.7;">
+              In summary, although CAT-K agents achieve higher distributional realism on the Sim Agents Challenge, we
+              observe that in
+              closed-loop planner evaluation, self-play–trained agents exhibit more reactive and adaptive behaviors,
+              especially in
+              collision and negotiation scenarios. This likely explains why CAT-K and the non-reactive Log-Replay agents
+              show higher
+              correlation in collision scores. </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- control speed of the videos-->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const speedSelect = document.getElementById('video-speed-select');
+      // grab all videos
+      const videos = document.querySelectorAll('video');
+
+      // debug: check we found them
+      console.log('Found videos:', videos);
+
+      speedSelect.addEventListener('change', function () {
+        const speed = parseFloat(this.value);
+        videos.forEach(video => {
+          video.playbackRate = speed;
+          // debug
+          console.log(`Set playbackRate to ${speed} on`, video);
+        });
+      });
+    });
+  </script>
+  <!--  -->
+  <!-- <section class="section" id="BibTeX">
+      <div class="container is-max-desktop content">
+        <div class="is-full-width"></div>
+        <h2 class="title">BibTeX</h2>
+        <pre><code>@misc{chang2025langtrajdiffusionmodeldataset,
+      title={LANGTRAJ: Diffusion Model and Dataset for Language-Conditioned Trajectory Simulation},
+      author={Wei-Jer Chang and Wei Zhan and Masayoshi Tomizuka and Manmohan Chandraker and Francesco Pittaluga},
+      year={2025},
+      eprint={2504.11521},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2504.11521},
+      } -->
+  </section>
+
+  </code></pre>
+  </div>
+  </section>
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="is-full-width">
+          <div class="content has-text-centered">
+            <h3 class="title is-5">Contact</h3>
+            <p>
+              For any questions, please contact <a href="mailto:research@applied.co">research@applied.co</a>
+            </p>
+            <hr style="margin: 2.0rem 0; background-color: #e0e0e0;">
+            <p class="is-size-5 has-text-grey">
+              Website template adapted from <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
