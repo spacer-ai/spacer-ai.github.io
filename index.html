@@ -368,8 +368,8 @@
 
             \[
             r_t = r_t^{\text{task}} + \alpha \, r_{\text{humanlike}}(s_t, a_t), \quad
-            L(\theta) = L_{\text{PPO}}(\theta; A[r]) - \beta \, D_{\text{KL}}\!\left(\pi_{\text{ref}}(\cdot \mid s_t)
-            \,\|\, \pi_\theta(\cdot \mid o_t)\right),
+            L(\theta) = L_{\text{PPO}}(\theta; A[r]) - \beta \, D_{\text{KL}}\!\left(\pi_\theta(\cdot \mid o_t)
+            \,\|\, \pi_{\text{ref}}(\cdot \mid s_t)\right),
             \]
 
             <p>
@@ -924,7 +924,7 @@
 
       <div class="columns is-centered has-text-centered">
         <div class="column is-full-width">
-          <img src="./static/images/fig2_correlation.png" alt="Correlation Analysis" width="90%" />
+          <img src="./static/images/fig2_correlation.png" alt="Correlation Analysis" width="72%" />
         </div>
       </div>
       <div class="columns is-centered has-text-justified">
